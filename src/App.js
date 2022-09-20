@@ -10,7 +10,7 @@ import ChronoTime from './ChronoTime';
 function App() {
 
   const [lap, setLap] = useState(85123);  
-
+  console.log(lap)
   const handleChange = (t) => {
     
     console.debug("New state lap: ", t);
@@ -19,16 +19,16 @@ function App() {
   };
 
   return (
-    <div class='container-fluid align-middle'>
-      <div class='row mt-4'>
-        <div class='col-4'>
+    <div className='container-fluid align-middle'>
+      <div className='row mt-4'>
+        <div className='col-4'>
           <Logo />
         </div>
-        <div class='col-8'>
+        <div className='col-8'>
           <h1>Difficulty Helper</h1>
         </div>
       </div>
-      <div class='row'>
+      <div className='row'>
         <p>This is the F1 2022 difficulty helper. With it, you can find the right difficulty level to make your game more realistic.</p>
         <p>Credit for the idea and data goes to <a href='https://www.reddit.com/user/phail216/'>u/phail216</a> who posted the original Excel file on <a href='https://www.reddit.com/r/F1Game/comments/wlxecx/f1_2022_difficulty_helper_v108/'>Reddit</a>.</p>
         <p>How To Use It:
@@ -44,29 +44,28 @@ function App() {
         </p>
         <p>Enjoy!</p>
       </div>
-      <div class='row lap-input  mt-4'>
-        <div class='col'>
+      <div className='row lap-input  mt-4'>
+        <div className='col'>
           <h2>Your average lap time</h2>
           <ChronoTime 
             value={lap}
-            setLap={setLap} 
+            setLap={setLap}  
             onChange={(t) => handleChange(t)} />
         </div>
       </div>
-      <div class='row track-input mt-4'>
-        <div class='col'>
+      <div className='row track-input mt-4'>
+        <div className='col'>
           <h2>Track</h2>
-          <p>Dataset version - <a href={data.versionUrl}>{data.version}</a></p>
           <Tracks 
             data={data}
             targetLap={lap} />
         </div>
       </div>
-      <div class='row mt-4'>
-        <div class='col'>
-          <footer class='footer'>
-            <div class='container'>
-              <a class='nav-link' href='https://github.com/rlfh/f1-2022-difficulty-helper'>Contribute to this tool on Github</a>
+      <div className='row mt-4'>
+        <div className='col'>
+          <footer className='footer'>
+            <div className='container'>
+              <a className='nav-link' href='https://github.com/r-henriques/f1-2022-difficulty-helper/'>Contribute to this tool on Github</a>
             </div>
           </footer>
         </div>

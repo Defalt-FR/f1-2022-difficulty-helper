@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState, useEffect } from 'react'
 import InputNumber from 'react-input-number';
 
 import { DateTime } from 'luxon'
@@ -12,46 +12,36 @@ export const toMillis = (dtObject) =>
 }
 
 
-class ChronoTime extends React.Component
-{
+function ChronoTime(props) {
+  let time = DateTime.fromMillis(props.value)  
 
-    constructor(props) {
-        super(props);
-        
-        var time = DateTime.fromMillis(this.props.value)
+  const [timeMin, setTimeMin] = useState()
+  const [timeSec, setTimeSec] = useState()
+  const [timeMs, setTimeMs] = useState()
 
-        this.state = {
-          timeMin: time.minute,
-          timeSec: time.second,
-          timeMilli: time.millisecond
-        };
-
-      }
-
-
-      
-
-     render() {       
-        const handleChange =  (unit, selection ) => 
+  const handleChange =  (unit, selection) => 
         {  
           var newTime, newTimeStr;
-  
+          
           console.log('Unit:', unit);
           console.log('Selection:', selection);
-          console.log('State:', JSON.stringify(this.state));
+          console.log('State:', timeMin, timeSec, timeMs);
 
           switch(unit)
           {
               case 'm':                
-                newTimeStr = ''.concat(selection, ':', this.state.timeSec, ':', this.state.timeMilli);
+                newTimeStr = ''.concat(selection, ':', timeSec, ':', timeMs);
+                setTimeMin(selection)
                 break;
               
               case 's':                  
-                newTimeStr = ''.concat(this.state.timeMin, ':', selection, ':', this.state.timeMilli);
+                newTimeStr = ''.concat(timeMin, ':', selection, ':', timeMs);
+                setTimeSec(selection)
                 break;
               
               case 'ms':
-                newTimeStr = ''.concat(this.state.timeMin, ':', this.state.timeSec, ':', selection);
+                newTimeStr = ''.concat(timeMin, ':', timeSec, ':', selection);
+                setTimeMs(selection)
                 break;
   
               default:
@@ -60,17 +50,21 @@ class ChronoTime extends React.Component
           }
           
           newTime = DateTime.fromFormat(newTimeStr, "m:s:SSS");
-          console.log(newTimeStr);
-          console.log(newTime.toString());
+          props.setLap(toMillis(newTime)); //update the "lap" state in App.js  
+        } 
 
-          this.props.setLap(toMillis(newTime));
-            
-        }                        
-  
-        
-          
-        return (
-            <span class='chrono-number mt-4'>
+
+  useEffect(() => {
+    // this let you "init" all 3 states of the ChronoTime component to the current lap (stored in App.js component) infos (min, sec & ms)
+    // and prevent it to be reset at every re-render of the app, which was happening before
+    let time = DateTime.fromMillis(props.value)
+    setTimeMin(time.minute)
+    setTimeSec(time.second)
+    setTimeMs(time.millisecond)
+  },[])
+
+  return (
+      <span class='chrono-number mt-4'>
                 <InputNumber
                     id='timeMin'
                     className='chrono-number'
@@ -79,7 +73,7 @@ class ChronoTime extends React.Component
                     min={0}
                     max={9}
                     step={1}
-                    value={this.state.timeMin}
+                    value={timeMin}
                     onChange={ (selection) => handleChange('m',selection) }
                 />
                 <span class='chrono-separator'>:</span>
@@ -90,7 +84,7 @@ class ChronoTime extends React.Component
                     min={0}
                     max={59}
                     step={1}
-                    value={this.state.timeSec}
+                    value={timeSec}
                     onChange={(selection) => handleChange('s', selection) }
                 />
                 <span class='chrono-separator'>.</span>
@@ -101,15 +95,11 @@ class ChronoTime extends React.Component
                     min={0}
                     max={999}
                     step={1}
-                    value={this.state.timeMilli}
+                    value={timeMs}
                     onChange={(selection) => handleChange('ms',selection) }
                 />
-                </span>
-        );
-    }
-
-
-
+        </span> 
+  )
 }
 
 export default ChronoTime;
